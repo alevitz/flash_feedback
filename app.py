@@ -1,5 +1,5 @@
 """Flask app for Flash Feedback"""
-from flask import Flask, render_template, redirect, request, jsonify
+from flask import Flask, render_template, redirect, request, jsonify, session, flash
 from models import db, connect_db, User
 from flask_debugtoolbar import DebugToolbarExtension
 from forms import RegisterForm, LoginForm
@@ -37,6 +37,8 @@ def register():
         db.session.add(user)
         db.session.commit()
 
+        session['username'] = username
+
         return redirect('/secret')
 
     return render_template('register.html', form=form)
@@ -54,6 +56,7 @@ def login():
         user = User.query.get(username)
 
         if user and user.password == password:
+            session['username'] = username
             return redirect('/secret')
 
         else:
@@ -65,4 +68,8 @@ def login():
 @app.route("/secret")
 def secret():
 
-    return ("You made it here!")
+    if 'username' not in session:
+        flash("You have to be logged in to view!")
+        return redirect('/')
+    else:
+        return ("You made it here!")
