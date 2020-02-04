@@ -9,21 +9,21 @@ Register User
 <h1>Add User</h1>
 
 <form id="add-user-form" method="POST">
-  {{ form.hidden_tag() }} 
+  {{ form.hidden_tag() }}
 
   {% for field in form
          if field.widget.input_type != 'hidden' %}
 
-    {% for error in field.errors %}
-      {{ error }}
-    {% endfor %}   
+  {% for error in field.errors %}
+  {{ error }}
+  {% endfor %}
 
-    <p>
-      {{ field.label }}
-      {{ field }}
-    </p>
+  <p>
+    {{ field.label }}
+    {{ field }}
+  </p>
 
-   {% endfor %}
+  {% endfor %}
 
   <button type="submit">Submit</button>
 </form>

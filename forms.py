@@ -7,26 +7,28 @@ from global_variables import USERNAME_LENGTH, EMAIL_LENGTH, FIRST_NAME_LENGTH, L
 class RegisterForm(FlaskForm):
     """Form for registering new user."""
 
-    username = StringField("Username", validators=[Length(max=USERNAME_LENGTH), InputRequired()])
+    username = StringField("Username", validators=[
+                           Length(max=USERNAME_LENGTH), InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
-    email = StringField("Email", validators=[Email(), Length(max=EMAIL_LENGTH), InputRequired()])
-    first_name = StringField("First Name", validators=[Length(max=FIRST_NAME_LENGTH), InputRequired()])
-    last_name = StringField("Last Name", validators=[Length(max=LAST_NAME_LENGTH), InputRequired()])
+    email = StringField("Email", validators=[
+                        Email(), Length(max=EMAIL_LENGTH), InputRequired()])
+    first_name = StringField("First Name", validators=[
+                             Length(max=FIRST_NAME_LENGTH), InputRequired()])
+    last_name = StringField("Last Name", validators=[
+                            Length(max=LAST_NAME_LENGTH), InputRequired()])
+
 
 class LoginForm(FlaskForm):
     """Form for user login."""
 
-    username = StringField("Username", validators=[Length(max=USERNAME_LENGTH), InputRequired()])
+    username = StringField("Username", validators=[
+                           Length(max=USERNAME_LENGTH), InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
 
 
 class FeedbackForm(FlaskForm):
     """Form for feedback"""
 
-    title = StringField("Title", validators=[Length(max=TITLE_LENGTH), InputRequired()])
+    title = StringField("Title", validators=[
+                        Length(max=TITLE_LENGTH), InputRequired()])
     content = TextField("Content", validators=[InputRequired()])
-
-
-
-
-

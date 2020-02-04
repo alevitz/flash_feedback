@@ -15,6 +15,7 @@ debug = DebugToolbarExtension(app)
 connect_db(app)
 db.create_all()
 
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -33,7 +34,8 @@ def register():
         first_name = form.first_name.data
         last_name = form.last_name.data
 
-        user = User(username=username, password=password, email=email, first_name=first_name, last_name=last_name) 
+        user = User(username=username, password=password,
+                    email=email, first_name=first_name, last_name=last_name)
 
         db.session.add(user)
         db.session.commit()
@@ -82,6 +84,7 @@ def show_user_details(username):
 
         return render_template("user_details.html", user=user)
 
+
 @app.route("/users/<username>/delete", methods=["POST"])
 def delete_user(username):
 
@@ -94,6 +97,7 @@ def delete_user(username):
         db.session.delete(user)
         db.session.commit()
     return redirect('/')
+
 
 @app.route("/users/<username>/feedback/add", methods=["GET", "POST"])
 def add_feedback(username):
@@ -119,6 +123,7 @@ def add_feedback(username):
 
     return render_template('feedback.html', form=form)
 
+
 @app.route('/logout')
 def logout():
     """ Log currently logged in user out of session"""
@@ -126,12 +131,13 @@ def logout():
 
     return redirect('/')
 
+
 @app.route('/feedback/<int:feedback_id>/update', methods=["GET", "POST"])
 def edit_feedback(feedback_id):
     """Update feedback details"""
 
     feedback = Feedback.query.get(feedback_id)
-    
+
     username = feedback.username if feedback else None
 
     if 'username' not in session:
@@ -144,13 +150,13 @@ def edit_feedback(feedback_id):
     elif session['username'] != username:
         flash("You cant edit feedback for others you sith lowlife!")
         return redirect("/")
-  
+
     form = FeedbackForm(obj=feedback)
 
     if form.validate_on_submit():
         feedback.title = form.title.data
         feedback.content = form.content.data
- 
+
         db.session.commit()
 
         return redirect(f"/users/{username}")
@@ -162,7 +168,7 @@ def edit_feedback(feedback_id):
 def delete_feedback(feedback_id):
 
     feedback = Feedback.query.get(feedback_id)
-    
+
     username = feedback.username if feedback else None
 
     if 'username' not in session:
