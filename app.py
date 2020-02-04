@@ -125,3 +125,56 @@ def logout():
     session.pop('username')
 
     return redirect('/')
+
+@app.route('/feedback/<int:feedback_id>/update', methods=["GET", "POST"])
+def edit_feedback(feedback_id):
+    """Update feedback details"""
+
+    feedback = Feedback.query.get(feedback_id)
+    
+    username = feedback.username if feedback else None
+
+    if 'username' not in session:
+        flash("You have to be logged in to edit feedback!")
+        return redirect("/")
+    elif not feedback:
+        username = session['username']
+        flash("That feedback does not exist Lord Vader!")
+        return redirect(f"/users/{username}")
+    elif session['username'] != username:
+        flash("You cant edit feedback for others you sith lowlife!")
+        return redirect("/")
+  
+    form = FeedbackForm(obj=feedback)
+
+    if form.validate_on_submit():
+        feedback.title = form.title.data
+        feedback.content = form.content.data
+ 
+        db.session.commit()
+
+        return redirect(f"/users/{username}")
+
+    return render_template('edit_feedback.html', form=form)
+
+
+@app.route("/feedback/<int:feedback_id>/delete", methods=["POST"])
+def delete_feedback(feedback_id):
+
+    feedback = Feedback.query.get(feedback_id)
+    
+    username = feedback.username if feedback else None
+
+    if 'username' not in session:
+        flash("You have to be logged in to delete feedback!")
+        return redirect("/")
+    elif not feedback:
+        flash("That feedback does not exist Lord Vader!")
+        return redirect(f"/users/{session['username']}")
+    elif session['username'] != username:
+        flash("You cant delete feedback for others you sith lowlife!")
+        return redirect(f"/users/{session['username']}")
+    else:
+        db.session.delete(feedback)
+        db.session.commit()
+        return redirect(f'/users/{username}')

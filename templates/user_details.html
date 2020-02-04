@@ -6,6 +6,10 @@
 
 {% block content %}
 
+{% for msg in get_flashed_messages() %}
+  <div>{{msg}}</div>
+{% endfor %}
+
   <p> Username: {{ user['username'] }}</p>
   <p> Email: {{ user['email'] }}</p>
   <p> First Name: {{ user['first_name'] }}</p>
