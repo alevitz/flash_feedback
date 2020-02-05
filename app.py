@@ -136,17 +136,17 @@ def logout():
 def edit_feedback(feedback_id):
     """Update feedback details"""
 
-    feedback = Feedback.query.get(feedback_id)
+    feedback = Feedback.query.get_or_404(feedback_id)
 
-    username = feedback.username if feedback else None
+    username = feedback.username
 
     if 'username' not in session:
         flash("You have to be logged in to edit feedback!")
         return redirect("/")
-    elif not feedback:
-        username = session['username']
-        flash("That feedback does not exist Lord Vader!")
-        return redirect(f"/users/{username}")
+    # elif not feedback:
+    #     username = session['username']
+    #     flash("That feedback does not exist Lord Vader!")
+    #     return redirect(f"/users/{username}")
     elif session['username'] != username:
         flash("You cant edit feedback for others you sith lowlife!")
         return redirect("/")
@@ -167,16 +167,16 @@ def edit_feedback(feedback_id):
 @app.route("/feedback/<int:feedback_id>/delete", methods=["POST"])
 def delete_feedback(feedback_id):
 
-    feedback = Feedback.query.get(feedback_id)
+    feedback = Feedback.query.get_or_404(feedback_id)
 
-    username = feedback.username if feedback else None
+    username = feedback.username
 
     if 'username' not in session:
         flash("You have to be logged in to delete feedback!")
         return redirect("/")
-    elif not feedback:
-        flash("That feedback does not exist Lord Vader!")
-        return redirect(f"/users/{session['username']}")
+    # elif not feedback:
+    #     flash("That feedback does not exist Lord Vader!")
+    #     return redirect(f"/users/{session['username']}")
     elif session['username'] != username:
         flash("You cant delete feedback for others you sith lowlife!")
         return redirect(f"/users/{session['username']}")
@@ -184,3 +184,7 @@ def delete_feedback(feedback_id):
         db.session.delete(feedback)
         db.session.commit()
         return redirect(f'/users/{username}')
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
