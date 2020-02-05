@@ -34,8 +34,8 @@ def register():
         first_name = form.first_name.data
         last_name = form.last_name.data
 
-        user = User(username=username, password=password,
-                    email=email, first_name=first_name, last_name=last_name)
+        user = User.register(username=username, password=password,
+                             email=email, first_name=first_name, last_name=last_name)
 
         db.session.add(user)
         db.session.commit()
@@ -51,15 +51,18 @@ def register():
 def login():
     """ Login User """
 
+    if 'username' in session:
+        return redirect(f'users/{session["username"]}')
+
     form = LoginForm()
 
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
 
-        user = User.query.get(username)
+        user = User.authenticate(username, password)
 
-        if user and user.password == password:
+        if user:
             session['username'] = username
             return redirect(f'/users/{username}')
 
@@ -96,6 +99,7 @@ def delete_user(username):
         user = User.query.get(username)
         db.session.delete(user)
         db.session.commit()
+        session.pop('username')
     return redirect('/')
 
 
@@ -127,7 +131,8 @@ def add_feedback(username):
 @app.route('/logout')
 def logout():
     """ Log currently logged in user out of session"""
-    session.pop('username')
+    if 'username' in session:
+        session.pop('username')
 
     return redirect('/')
 

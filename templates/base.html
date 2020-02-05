@@ -4,10 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>{% block title %}{% endblock %}</title>
+  <title>{% block title %}TITLE GOES HERE{% endblock %}</title>
 </head>
 <body>
+  {% for msg in get_flashed_messages() %}
+    <div>{{msg}}</div>
+  {% endfor %}
+
   {% block content %}
+  CONTENT GOES HERE
   {% endblock %}
+
+  {% if 'username' in session %}
+  <a href="/logout">Logout</a>
+  <a href="/users/{{session.username}}">User Home Page</a>
+  {% else %}
+  <a href="/login">Login</a>
+  {% endif %}
 </body>
 </html>

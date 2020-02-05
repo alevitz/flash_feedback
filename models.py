@@ -2,9 +2,11 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from global_variables import USERNAME_LENGTH, EMAIL_LENGTH, FIRST_NAME_LENGTH, LAST_NAME_LENGTH, TITLE_LENGTH
+from flask_bcrypt import Bcrypt
 
 
 db = SQLAlchemy()
+bcrypt = Bcrypt()
 
 
 def connect_db(app):
@@ -28,6 +30,28 @@ class User(db.Model):
     feedbacks = db.relationship(
         'Feedback', backref="user", cascade="all, delete-orphan")
 
+    @classmethod
+    def register(cls, username, password, email, first_name, last_name):
+        """Register user w/hashed password and return user."""
+
+        hashed = bcrypt.generate_password_hash(password)
+        hashed_utf8 = hashed.decode("utf8")
+
+        return cls(username=username, password=hashed_utf8, email=email, first_name=first_name, last_name=last_name)
+    
+    @classmethod
+    def authenticate(cls, username, password):
+        """Validate that user exists and password is correct.
+            Return user if valid; else return False.
+        """
+
+        u = User.query.filter_by(username=username).first()
+
+        if u and bcrypt.check_password_hash(u.password, password):
+            return u
+        else:
+            return False
+
 
 class Feedback(db.Model):
     """ Feedback Entry """
@@ -39,3 +63,4 @@ class Feedback(db.Model):
     content = db.Column(db.Text, nullable=False)
     username = db.Column(db.String(USERNAME_LENGTH),
                          db.ForeignKey('users.username'))
+

@@ -4,7 +4,7 @@ from models import db, User, Feedback
 db.drop_all()
 db.create_all()
 
-user1 = User(
+user1 = User.register(
     username='padawan',
     password='apprentice',
     email='ilovejedis@jedihotmail.com',
@@ -12,7 +12,7 @@ user1 = User(
     last_name='solo'
 )
 
-user2 = User(
+user2 = User.register(
     username='padawan2',
     password='apprentice2',
     email='ilovejedis2@jedihotmail.com',
